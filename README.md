@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Flashcards: Religião e Diversidade</title>
+    <meta name="description" content="Atividade educacional sobre religião com perspectivas plurais e inclusivas - Alinhado à BNCC">
+    <meta name="author" content="Uipirangi Franklin da Silva Câmara">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const BookOpen = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+        );
+
+        const Trophy = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+            </svg>
+        );
+
+        const Star = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+        );
+
+        const Eye = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        );
+
+        const FlashcardGame = () => {
+            const flashcards = [
+                {
+                    id: 1,
+                    categoria: "Conceitos Fundamentais",
+                    frente: "O que é Religião?",
+                    verso: "Conjunto de crenças, práticas, símbolos e valores que conectam indivíduos e comunidades a algo considerado sagrado ou transcendente. Manifesta-se de formas diversas em diferentes culturas.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 2,
+                    categoria: "Conceitos Fundamentais",
+                    frente: "O que significa o conceito de 'Sagrado'?",
+                    verso: "Aquilo que é separado do comum, que inspira reverência e respeito. O sagrado varia entre tradições: pode ser um ser divino, a natureza, antepassados ou princípios éticos.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 3,
+                    categoria: "Cristianismo",
+                    frente: "Quais são os principais fundamentos do Cristianismo?",
+                    verso: "Crença em um Deus único, nos ensinamentos de Jesus Cristo como filho de Deus e salvador, na Bíblia como texto sagrado, e em valores como amor ao próximo, perdão e caridade.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 4,
+                    categoria: "Islamismo",
+                    frente: "Quais são os Cinco Pilares do Islamismo?",
+                    verso: "1) Shahada (profissão de fé), 2) Salat (orações diárias), 3) Zakat (caridade), 4) Sawm (jejum no Ramadã), 5) Hajj (peregrinação a Meca). São práticas fundamentais para muçulmanos.",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 5,
+                    categoria: "Judaísmo",
+                    frente: "O que é a Torá no Judaísmo?",
+                    verso: "É o texto mais sagrado do Judaísmo, composto pelos cinco primeiros livros da Bíblia Hebraica. Contém leis, narrativas e ensinamentos que guiam a vida judaica.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 6,
+                    categoria: "Budismo",
+                    frente: "O que são as Quatro Nobres Verdades do Budismo?",
+                    verso: "1) A vida envolve sofrimento, 2) O sofrimento tem causa (desejo/apego), 3) É possível cessar o sofrimento, 4) Existe um caminho para cessá-lo (Nobre Caminho Óctuplo).",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 7,
+                    categoria: "Hinduísmo",
+                    frente: "O que é Dharma no Hinduísmo?",
+                    verso: "Conceito central que significa dever, retidão, lei cósmica e ordem moral. Refere-se ao caminho correto de viver de acordo com princípios éticos e espirituais.",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 8,
+                    categoria: "Religiões Afro-brasileiras",
+                    frente: "O que caracteriza o Candomblé?",
+                    verso: "Religião afro-brasileira que cultua orixás (divindades da natureza), valoriza ancestralidade africana, usa música e dança em rituais, e preserva tradições iorubás, bantos e jejes.",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 9,
+                    categoria: "Religiões Afro-brasileiras",
+                    frente: "O que é a Umbanda?",
+                    verso: "Religião brasileira que sintetiza elementos africanos, indígenas, católicos e espíritas. Cultua orixás e entidades (caboclos, pretos-velhos), praticando caridade e desenvolvimento espiritual.",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 10,
+                    categoria: "Religiões Indígenas",
+                    frente: "Como as religiões indígenas brasileiras concebem o sagrado?",
+                    verso: "O sagrado está integrado à natureza, aos espíritos dos ancestrais e seres da floresta. Há profundo respeito pela Terra, rituais xamânicos e transmissão oral de conhecimentos.",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 11,
+                    categoria: "Conceitos Fundamentais",
+                    frente: "O que é Pluralismo Religioso?",
+                    verso: "Reconhecimento e respeito pela coexistência de múltiplas tradições religiosas em uma sociedade, valorizando a diversidade como riqueza cultural e direito fundamental.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 12,
+                    categoria: "Direitos e Ética",
+                    frente: "O que é Laicidade do Estado?",
+                    verso: "Princípio que separa Estado e religiões, garantindo liberdade de crença e não-crença. O Estado não adota religião oficial e deve tratar todas com igualdade e respeito.",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 13,
+                    categoria: "Direitos e Ética",
+                    frente: "O que é Intolerância Religiosa?",
+                    verso: "Discriminação, perseguição ou violência contra pessoas por suas crenças religiosas. É crime e viola direitos humanos fundamentais de liberdade de consciência e crença.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 14,
+                    categoria: "Conceitos Fundamentais",
+                    frente: "O que são Ritos Religiosos?",
+                    verso: "Práticas cerimoniais que marcam momentos importantes (nascimento, passagem, morte) ou celebram o sagrado. Incluem orações, danças, cantos, oferendas e gestos simbólicos.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 15,
+                    categoria: "Diálogo Inter-religioso",
+                    frente: "Por que o diálogo inter-religioso é importante?",
+                    verso: "Promove respeito mútuo, combate preconceitos, constrói paz social e permite que diferentes tradições contribuam para valores comuns como justiça, compaixão e solidariedade.",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 16,
+                    categoria: "Filosofias de Vida",
+                    frente: "Pessoas sem religião podem ter princípios éticos?",
+                    verso: "Sim! Filosofias seculares baseiam-se em razão, ciência, direitos humanos e valores universais. Ateísmo, agnosticismo e humanismo secular são exemplos de visões não-religiosas da vida.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 17,
+                    categoria: "Símbolos e Práticas",
+                    frente: "O que são Textos Sagrados?",
+                    verso: "Escrituras consideradas revelações divinas ou sabedorias ancestrais. Exemplos: Bíblia (cristãos), Alcorão (muçulmanos), Torá (judeus), Vedas (hindus), Tripitaka (budistas).",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 18,
+                    categoria: "Cultura e Sociedade",
+                    frente: "Como religiões influenciam a cultura?",
+                    verso: "Moldam arte, música, arquitetura, festividades, valores morais, leis e práticas sociais. Exemplos: Natal, Ramadã, Diwali, festas juninas, carnaval (influências religiosas diversas).",
+                    dificuldade: "intermediário"
+                },
+                {
+                    id: 19,
+                    categoria: "Símbolos e Práticas",
+                    frente: "O que são Lideranças Religiosas?",
+                    verso: "Pessoas que orientam comunidades de fé: padres, pastores, rabinos, imãs, monges, pais/mães-de-santo, pajés. Têm papel de ensino, ritual e, frequentemente, ação social.",
+                    dificuldade: "básico"
+                },
+                {
+                    id: 20,
+                    categoria: "Direitos e Ética",
+                    frente: "O que é Liberdade de Crença?",
+                    verso: "Direito humano fundamental de escolher, praticar ou mudar de religião, ou não ter religião alguma, sem sofrer discriminação, perseguição ou imposição.",
+                    dificuldade: "básico"
+                }
+            ];
+
+            const [modo, setModo] = useState('menu');
+            const [cardAtual, setCardAtual] = useState(0);
+            const [virado, setVirado] = useState(false);
+            const [pontos, setPontos] = useState(0);
+            const [cardsJogados, setCardsJogados] = useState([]);
+            const [embaralhados, setEmbaralhados] = useState([]);
+
+            const embaralharCards = () => {
+                const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
+                setEmbaralhados(shuffled);
+                return shuffled;
+            };
+
+            const iniciarEstudo = () => {
+                setModo('estudo');
+                setCardAtual(0);
+                setVirado(false);
+            };
+
+            const iniciarJogo = () => {
+                const shuffled = embaralharCards();
+                setModo('jogo');
+                setCardAtual(0);
+                setVirado(false);
+                setPontos(0);
+                setCardsJogados([]);
+            };
+
+            const voltarMenu = () => {
+                setModo('menu');
+                setVirado(false);
+            };
+
+            const proximoCard = () => {
+                const cards = modo === 'jogo' ? embaralhados : flashcards;
+                if (cardAtual < cards.length - 1) {
+                    setCardAtual(cardAtual + 1);
+                    setVirado(false);
+                } else {
+                    if (modo === 'jogo') {
+                        setModo('resultado');
+                    } else {
+                        setCardAtual(0);
+                        setVirado(false);
+                    }
+                }
+            };
+
+            const responderJogo = (acertou) => {
+                const cards = embaralhados;
+                const novoCard = {
+                    ...cards[cardAtual],
+                    acertou
+                };
+                setCardsJogados([...cardsJogados, novoCard]);
+                
+                if (acertou) {
+                    setPontos(pontos + (cards[cardAtual].dificuldade === 'intermediário' ? 15 : 10));
+                }
+                
+                proximoCard();
+            };
+
+            const getCorCategoria = (categoria) => {
+                const cores = {
+                    "Conceitos Fundamentais": "bg-blue-100 text-blue-800",
+                    "Cristianismo": "bg-purple-100 text-purple-800",
+                    "Islamismo": "bg-green-100 text-green-800",
+                    "Judaísmo": "bg-indigo-100 text-indigo-800",
+                    "Budismo": "bg-orange-100 text-orange-800",
+                    "Hinduísmo": "bg-red-100 text-red-800",
+                    "Religiões Afro-brasileiras": "bg-amber-100 text-amber-800",
+                    "Religiões Indígenas": "bg-teal-100 text-teal-800",
+                    "Direitos e Ética": "bg-pink-100 text-pink-800",
+                    "Diálogo Inter-religioso": "bg-cyan-100 text-cyan-800",
+                    "Filosofias de Vida": "bg-slate-100 text-slate-800",
+                    "Símbolos e Práticas": "bg-violet-100 text-violet-800",
+                    "Cultura e Sociedade": "bg-lime-100 text-lime-800"
+                };
+                return cores[categoria] || "bg-gray-100 text-gray-800";
+            };
+
+            if (modo === 'menu') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="text-center mb-12">
+                                <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
+                                    Religião e Diversidade
+                                </h1>
+                                <p className="text-xl text-gray-600">
+                                    Explore perspectivas plurais e inclusivas sobre religião
+                                </p>
+                                <p className="text-sm text-gray-500 mt-2">
+                                    Alinhado à BNCC | Ensino Médio | Educação não confessional
+                                </p>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-2 p-8 text-center" onClick={iniciarEstudo}>
+                                    <div className="flex justify-center mb-4 text-indigo-600">
+                                        <BookOpen />
+                                    </div>
+                                    <h2 className="text-2xl font-bold mb-3 text-gray-800">Modo Estudo</h2>
+                                    <p className="text-gray-600 mb-4">
+                                        Explore todos os {flashcards.length} flashcards no seu ritmo. Ideal para aprender novos conceitos sobre religião e diversidade.
+                                    </p>
+                                    <div className="bg-indigo-50 p-3 rounded-lg">
+                                        <p className="text-sm text-indigo-700 font-semibold">
+                                            ✓ Todos os cards em sequência
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-2 p-8 text-center" onClick={iniciarJogo}>
+                                    <div className="flex justify-center mb-4 text-purple-600">
+                                        <Trophy />
+                                    </div>
+                                    <h2 className="text-2xl font-bold mb-3 text-gray-800">Modo Jogo</h2>
+                                    <p className="text-gray-600 mb-4">
+                                        Teste seus conhecimentos! Cards embaralhados com sistema de pontuação. Avalie se acertou ou não cada resposta.
+                                    </p>
+                                    <div className="bg-purple-50 p-3 rounded-lg">
+                                        <p className="text-sm text-purple-700 font-semibold">
+                                            ✓ Pontuação por dificuldade
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-8 bg-white rounded-lg p-6 shadow-lg">
+                                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <Star />
+                                    Categorias Incluídas
+                                </h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    {[...new Set(flashcards.map(c => c.categoria))].map((cat, i) => (
+                                        <div key={i} className={`${getCorCategoria(cat)} px-3 py-2 rounded-lg text-sm font-medium text-center`}>
+                                            {cat}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mt-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-6 shadow border-l-4 border-indigo-500">
+                                <h3 className="font-bold text-gray-800 mb-2">📝 Créditos e Licença</h3>
+                                <p className="text-sm text-gray-700 mb-1">
+                                    <strong>Autor:</strong> Uipirangi Franklin da Silva Câmara
+                                </p>
+                                <p className="text-sm text-gray-700 mb-1">
+                                    <strong>Desenvolvido com:</strong> Claude (Anthropic)
+                                </p>
+                                <p className="text-sm text-gray-600 mb-2">
+                                    Alinhado à BNCC - Base Nacional Comum Curricular
+                                </p>
+                                <div className="flex items-center gap-2 text-xs text-gray-600 bg-white px-3 py-2 rounded">
+                                    <span>📄</span>
+                                    <span>Licença Creative Commons - Permite compartilhamento e adaptação com atribuição</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (modo === 'resultado') {
+                const acertos = cardsJogados.filter(c => c.acertou).length;
+                const porcentagem = Math.round((acertos / cardsJogados.length) * 100);
+                
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8">
+                        <div className="max-w-2xl mx-auto">
+                            <div className="bg-white rounded-lg shadow-2xl p-12 text-center">
+                                <div className="flex justify-center mb-6 text-yellow-500">
+                                    <Trophy />
+                                </div>
+                                <h2 className="text-4xl font-bold mb-4 text-gray-800">Jogo Finalizado!</h2>
+                                
+                                <div className="bg-gradient-to-r from-purple-100 to-indigo-100 p-6 rounded-xl mb-6">
+                                    <p className="text-6xl font-bold text-purple-600 mb-2">{pontos}</p>
+                                    <p className="text-xl text-gray-700">pontos conquistados</p>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 mb-8">
+                                    <div className="bg-green-50 p-4 rounded-lg">
+                                        <p className="text-3xl font-bold text-green-600">{acertos}</p>
+                                        <p className="text-gray-600">Acertos</p>
+                                    </div>
+                                    <div className="bg-red-50 p-4 rounded-lg">
+                                        <p className="text-3xl font-bold text-red-600">{cardsJogados.length - acertos}</p>
+                                        <p className="text-gray-600">Erros</p>
+                                    </div>
+                                </div>
+
+                                <div className="mb-8">
+                                    <div className="bg-gray-200 h-4 rounded-full overflow-hidden">
+                                        <div 
+                                            className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-1000"
+                                            style={{width: `${porcentagem}%`}}
+                                        />
+                                    </div>
+                                    <p className="text-lg font-semibold text-gray-700 mt-2">{porcentagem}% de aproveitamento</p>
+                                </div>
+
+                                <button
+                                    onClick={voltarMenu}
+                                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg"
+                                >
+                                    Voltar ao Menu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            const cards = modo === 'jogo' ? embaralhados : flashcards;
+            const card = cards[cardAtual];
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-8">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="flex justify-between items-center mb-6">
+                            <button
+                                onClick={voltarMenu}
+                                className="bg-white px-4 py-2 rounded-lg shadow hover:shadow-md transition-all text-gray-700 font-medium"
+                            >
+                                ← Voltar
+                            </button>
+                            <div className="flex items-center gap-4">
+                                {modo === 'jogo' && (
+                                    <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-6 py-2 rounded-lg font-bold text-lg shadow-lg">
+                                        ⭐ {pontos} pontos
+                                    </div>
+                                )}
+                                <div className="bg-white px-4 py-2 rounded-lg shadow text-gray-700 font-medium">
+                                    {cardAtual + 1} / {cards.length}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div 
+                            className="bg-white rounded-lg shadow-2xl cursor-pointer transform transition-all hover:scale-102 min-h-[400px] p-12"
+                            onClick={() => setVirado(!virado)}
+                        >
+                            <div className="flex justify-between items-start mb-6">
+                                <span className={`${getCorCategoria(card.categoria)} px-4 py-2 rounded-full text-sm font-semibold`}>
+                                    {card.categoria}
+                                </span>
+                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                    card.dificuldade === 'básico' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                                }`}>
+                                    {card.dificuldade === 'básico' ? '⭐ Básico (10pts)' : '⭐⭐ Intermediário (15pts)'}
+                                </span>
+                            </div>
+
+                            <div className="text-center min-h-[220px] flex items-center justify-center">
+                                {!virado ? (
+                                    <div>
+                                        <h3 className="text-3xl font-bold text-gray-800 mb-6">
+                                            {card.frente}
+                                        </h3>
+                                        <div className="flex items-center justify-center gap-2 text-gray-500 mt-8">
+                                            <Eye />
+                                            <p className="text-sm">Clique para revelar a resposta</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <p className="text-xl text-gray-700 leading-relaxed">
+                                            {card.verso}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {modo === 'jogo' && virado && (
+                                <div className="grid grid-cols-2 gap-4 mt-8">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); responderJogo(false); }}
+                                        className="bg-red-500 hover:bg-red-600 text-white py-4 rounded-lg font-semibold text-lg transition-all shadow-lg"
+                                    >
+                                        ❌ Errei
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); responderJogo(true); }}
+                                        className="bg-green-500 hover:bg-green-600 text-white py-4 rounded-lg font-semibold text-lg transition-all shadow-lg"
+                                    >
+                                        ✓ Acertei
+                                    </button>
+                                </div>
+                            )}
+
+                            {modo === 'estudo' && (
+                                <div className="mt-8 flex justify-center">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); proximoCard(); }}
+                                        className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg"
+                                    >
+                                        {cardAtual < cards.length - 1 ? 'Próximo Card →' : '↻ Recomeçar'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mt-6 bg-white rounded-lg p-4 shadow text-center text-sm text-gray-600">
+                            <p><strong>Dica:</strong> {modo === 'jogo' ? 'Leia a pergunta, pense na resposta e clique para verificar. Seja honesto ao avaliar!' : 'Explore cada card com atenção. Clique para virar e descobrir mais!'}</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<FlashcardGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>
